@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- The bottle icon of the old Android app, redrawn. -->
+  <defs>
+    <clipPath id="bulb">
+      <circle cx="256" cy="321" r="121"/>
+    </clipPath>
+    <g id="bottle">
+      <path id="outline" d="M 214 112 L 214 196 A 132 132 0 1 0 298 196 L 298 112 Z"/>
+    </g>
+  </defs>
+  <rect x="14" y="14" width="484" height="484" rx="84" fill="#2196f3" stroke="#1565c0" stroke-width="20"/>
+  <!-- White halo, black outline, white glass -->
+  <use href="#outline" fill="none" stroke="#fff" stroke-width="56" stroke-linejoin="round"/>
+  <rect x="186" y="74" width="140" height="44" rx="14" fill="#fff" stroke="#fff" stroke-width="36"/>
+  <use href="#outline" fill="#fff" stroke="#111" stroke-width="20" stroke-linejoin="round"/>
+  <!-- Red liquid with bubbles -->
+  <rect x="120" y="248" width="272" height="210" fill="#f44336" clip-path="url(#bulb)"/>
+  <circle cx="246" cy="290" r="22" fill="#fff" opacity="0.9"/>
+  <circle cx="288" cy="352" r="16" fill="#fff" opacity="0.9"/>
+  <circle cx="214" cy="356" r="11" fill="#fff" opacity="0.9"/>
+  <!-- Rim -->
+  <rect x="186" y="74" width="140" height="44" rx="14" fill="#fff" stroke="#111" stroke-width="20"/>
+</svg>

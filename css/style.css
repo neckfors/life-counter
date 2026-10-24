@@ -1,0 +1,1270 @@
+/* The text styling variables (--life-scale, --life-font, --life-weight, --life-color, and the same
+   for name, counters, counterOne and counterTwo) are set by styling.js. */
+:root {
+  --panel: #1f1f1f;
+  --panel-raised: #2c2c2c;
+  --text: #f2f2f2;
+  --text-dim: #a0a0a0;
+  --accent: #89c4f4;
+  --gap: 3px;
+}
+
+/* Oswald (SIL Open Font License, see fonts/OFL.txt), used by the Condensed typeface. */
+@font-face {
+  font-family: Oswald;
+  src: url("../fonts/oswald-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #000;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* Board */
+
+/* The board (and the dice and starting-player layers on top of it) keep clear of the notch,
+   rounded corners and home bar on phones that have them. */
+#board,
+.dice-layer,
+.pick-layer {
+  inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+#board {
+  position: fixed;
+  display: flex;
+  touch-action: none;
+}
+
+.split {
+  display: flex;
+  flex: var(--w) 1 0;
+  gap: var(--gap);
+  min-width: 0;
+  min-height: 0;
+}
+
+.split.h {
+  flex-direction: row;
+}
+
+.split.v {
+  flex-direction: column;
+}
+
+.area {
+  position: relative;
+  flex: var(--w) 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+  container-type: size;
+}
+
+/* The player's area, rotated to face them. Sideways areas swap width and height. */
+.face {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100cqw;
+  height: 100cqh;
+  display: flex;
+  flex-direction: column;
+  transform: translate(-50%, -50%) rotate(var(--rot));
+}
+
+.face.sideways {
+  width: 100cqh;
+  height: 100cqw;
+}
+
+.life,
+.name,
+.counter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  container-type: size;
+  text-shadow: 0 0 0.08em rgba(0, 0, 0, 0.35);
+}
+
+/* Counters are sized from the whole row, so a single visible counter is the same size as two. */
+.counter {
+  container-type: normal;
+}
+
+/* Life takes about 70% of the area; counters and then the name sit below it, nearest the player.
+   The counters and the name sit at the top of their space with their text trimmed to the visible
+   letters, so life is centred between the top of the area and the top of the text below it. */
+.life {
+  flex: 10 1 0;
+  color: var(--life-color);
+  font-family: var(--life-font);
+  font-weight: var(--life-weight);
+}
+
+.name {
+  flex: 1.6 1 0;
+  align-items: flex-start;
+  opacity: 0.8;
+  color: var(--name-color);
+  font-family: var(--name-font);
+  font-weight: var(--name-weight);
+}
+
+.counters {
+  display: flex;
+  flex: 1.95 1 0;
+  min-height: 0;
+  container-type: size;
+}
+
+.counter {
+  flex: 1 1 0;
+  align-items: flex-start;
+  font-family: var(--counters-font);
+  font-weight: var(--counters-weight);
+}
+
+.counterOne {
+  color: var(--counterOne-color);
+}
+
+.counterTwo {
+  color: var(--counterTwo-color);
+}
+
+.value {
+  position: relative;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Trim the text box to the digits themselves (top of the digits to the baseline). */
+.value {
+  text-box: trim-both cap alphabetic;
+}
+
+.life .value {
+  font-size: calc(min(66cqh, 44cqw * var(--life-widen, 1)) * var(--life-scale, 1));
+}
+
+.counter .value {
+  font-size: calc(min(88cqh, 15cqw * var(--counters-widen, 1)) * var(--counters-scale, 1));
+}
+
+/* Trimmed to the top of the capitals; the padding and negative margin keep accents (Å, Ö) from being
+   cut off by the overflow clipping that the ellipsis needs. */
+.name-text {
+  max-width: 92%;
+  margin-top: -0.3em;
+  padding-top: 0.3em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-box: trim-both cap text;
+  font-size: calc(min(70cqh, 9cqw * var(--name-widen, 1)) * var(--name-scale, 1));
+}
+
+/* The running change, e.g. "−3", centred above the number. */
+.change {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  padding-bottom: 0.3em;
+  font-size: 0.26em;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 0.6s;
+}
+
+/* Counters are smaller, so their change is relatively larger to stay readable. */
+.counter .change {
+  font-size: 0.45em;
+  padding-bottom: 0.2em;
+}
+
+.change.visible {
+  opacity: 0.9;
+  transition: none;
+}
+
+#menu-button {
+  position: fixed;
+  left: calc(50% + (env(safe-area-inset-left) - env(safe-area-inset-right)) / 2);
+  top: calc(50% + (env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 2);
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  transform: translate(-50%, -50%);
+  touch-action: manipulation;
+}
+
+/* Overlays and dialogs */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  touch-action: manipulation;
+}
+
+.panel {
+  width: min(88vw, 340px);
+  max-height: 88vh;
+  overflow: auto;
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  transform: rotate(var(--rot));
+}
+
+.panel.sideways {
+  width: min(88vh, 340px);
+  max-height: 88vw;
+}
+
+.panel h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hint-text {
+  margin: 0 0 12px;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.button {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--panel-raised);
+  font-size: 16px;
+}
+
+.button.primary {
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+.button:disabled {
+  opacity: 0.35;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.entry-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.entry {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  border-radius: 10px;
+  background: #000;
+  font-size: 32px;
+  font-variant-numeric: tabular-nums;
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.key {
+  height: 52px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--panel-raised);
+  font-size: 24px;
+}
+
+.key:active {
+  background: #444;
+}
+
+.key.back {
+  width: 64px;
+  height: 56px;
+}
+
+.text-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 12px;
+  border: 2px solid var(--panel-raised);
+  border-radius: 10px;
+  background: #000;
+  color: var(--text);
+  font: inherit;
+  font-size: 20px;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.text-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* Menu */
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--panel-raised);
+  font-size: 17px;
+  text-align: left;
+}
+
+
+/* Full-screen pages (settings) */
+
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  background: #121212;
+}
+
+.screen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  padding-top: max(10px, env(safe-area-inset-top));
+  background: var(--panel);
+}
+
+.screen-header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.screen-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 16px 32px;
+  touch-action: pan-y;
+}
+
+.screen-body section {
+  margin-top: 20px;
+}
+
+.screen-body h2 {
+  margin: 0 0 10px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.segmented {
+  display: flex;
+  gap: 6px;
+}
+
+.segment {
+  flex: 1;
+  height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--panel-raised);
+  font-size: 18px;
+}
+
+.segment.selected {
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+}
+
+.layout-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.layout-option.selected {
+  border-color: var(--accent);
+}
+
+.preview {
+  display: flex;
+  width: 64px;
+  aspect-ratio: var(--aspect);
+  border: 2px solid #000;
+  border-radius: 6px;
+  background: #000;
+  overflow: hidden;
+  --gap: 2px;
+}
+
+.preview-area {
+  display: flex;
+  flex: var(--w) 1 0;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.preview-area span {
+  transform: rotate(var(--rot));
+}
+
+.layout-name {
+  color: var(--text-dim);
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.layout-option.selected .layout-name {
+  color: var(--text);
+}
+
+.color-row {
+  margin-bottom: 14px;
+}
+
+.color-name {
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+
+.swatch {
+  aspect-ratio: 1;
+  max-height: 44px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+}
+
+.swatch.selected {
+  border: 3px solid #fff;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.header-buttons .button {
+  padding: 0 14px;
+}
+
+.button.confirm {
+  background: #c0392b;
+}
+
+.menu-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.menu-pair .menu-item {
+  justify-content: center;
+  padding: 6px 10px;
+  font-size: 15px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* Undo after a reset, just below the menu button. */
+.undo-button {
+  position: fixed;
+  left: 50%;
+  top: calc(50% + 44px);
+  z-index: 11;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--accent);
+  color: #000;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  transform: translateX(-50%);
+  touch-action: manipulation;
+}
+
+/* Name dialog: favourites */
+
+.input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.star {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--panel-raised);
+  color: var(--text-dim);
+  font-size: 26px;
+}
+
+.star.on {
+  color: #f1c40f;
+}
+
+.star:disabled {
+  opacity: 0.35;
+}
+
+.favorites-title {
+  margin: 14px 0 6px;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: flex;
+  border-radius: 20px;
+  background: var(--panel-raised);
+  overflow: hidden;
+}
+
+.chip button {
+  min-height: 38px;
+  border: 0;
+  background: none;
+  font-size: 15px;
+}
+
+.chip-name {
+  padding: 0 4px 0 14px;
+}
+
+.chip-name:disabled {
+  opacity: 0.35;
+}
+
+.chip-remove {
+  padding: 0 12px 0 8px;
+  color: var(--text-dim);
+}
+
+/* Dice */
+
+.dice-layer {
+  position: fixed;
+  z-index: 12;
+  display: flex;
+  touch-action: manipulation;
+}
+
+.dice-area {
+  background: rgba(0, 0, 0, 0.78);
+}
+
+.dice-face {
+  align-items: center;
+  justify-content: center;
+  gap: 2cqh;
+}
+
+/* The die's space. --s is the die size; the die is thrown into this space from the player's edge. */
+.die {
+  --s: min(40cqh, 40cqw);
+  position: relative;
+  width: var(--s);
+  height: var(--s);
+}
+
+.die-throw,
+.die-shadow {
+  position: absolute;
+  inset: 0;
+}
+
+.die-throw {
+  perspective: calc(var(--s) * 5);
+}
+
+.die-shadow {
+  inset: auto 8% -8% 8%;
+  height: 22%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.75), transparent);
+}
+
+/* d6: a 3D cube with pips on all six sides. */
+.cube {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.cube-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 16%;
+  background: #fafafa;
+  box-shadow: inset 0 0 0 calc(var(--s) * 0.02) #d4d4d4, inset 0 calc(var(--s) * -0.06) calc(var(--s) * 0.12) rgba(0, 0, 0, 0.12);
+  backface-visibility: hidden;
+}
+
+.cube-face svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: #1b1b1b;
+}
+
+/* Other sizes: a number on each side of the cube. */
+.cube-number {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #1b1b1b;
+  font: 700 calc(var(--s) * var(--fs)) / 1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The result stops with a small pop. */
+.cube-number.reveal {
+  animation: number-reveal 450ms cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+@keyframes number-reveal {
+  0% { color: #c99a06; transform: scale(1.35); }
+  100% { color: #1b1b1b; transform: scale(1); }
+}
+
+/* One d6 in the middle of the screen: no label, and Roll again sits just below the die. */
+.dice-layer.single .die-label,
+.dice-layer.single .die-action {
+  display: none;
+}
+
+.die-again {
+  position: fixed;
+  left: 50%;
+  top: calc(50% + min(20vw, 20vh) + 28px);
+  z-index: 1;
+  transform: translateX(-50%);
+}
+
+/* A puff of dust where the die hits the table. */
+.dust {
+  position: absolute;
+  left: 15%;
+  top: 40%;
+  width: 70%;
+  height: 22%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.55), transparent);
+  pointer-events: none;
+}
+
+/* Label and button keep their space, so nothing jumps when they appear. */
+.die-label {
+  height: 1.3em;
+  margin-top: 2cqh;
+  color: var(--text-dim);
+  font-size: min(8cqh, 7cqw);
+  font-weight: 600;
+}
+
+.die-action {
+  min-height: 44px;
+}
+
+.winner .die-throw {
+  filter: drop-shadow(0 0 calc(var(--s) * 0.12) rgba(241, 196, 15, 0.95)) drop-shadow(0 0 calc(var(--s) * 0.3) rgba(241, 196, 15, 0.6));
+  transition: filter 0.3s;
+}
+
+.winner .die-label {
+  color: #f1c40f;
+  font-size: min(10cqh, 8cqw);
+}
+
+.tie .die {
+  animation: die-shake 450ms ease-in-out;
+}
+
+@keyframes die-shake {
+  0%, 100% { transform: none; }
+  20% { transform: translateX(-8%) rotate(-6deg); }
+  40% { transform: translateX(7%) rotate(5deg); }
+  60% { transform: translateX(-5%) rotate(-3deg); }
+  80% { transform: translateX(3%) rotate(2deg); }
+}
+
+.tie .die-label {
+  color: var(--accent);
+}
+
+/* Players knocked out by a re-roll of a tie are dimmed. */
+.out .die,
+.out .die-label {
+  opacity: 0.35;
+}
+
+/* Gold confetti from the winning die. */
+.confetti {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7%;
+  height: 11%;
+  margin: -5.5% 0 0 -3.5%;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* History */
+
+.tabs {
+  position: sticky;
+  top: -8px;
+  z-index: 1;
+  display: flex;
+  gap: 6px;
+  margin: 0 -16px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  background: #121212;
+}
+
+.tab {
+  flex: none;
+  max-width: 40vw;
+  min-height: 40px;
+  padding: 0 14px;
+  overflow: hidden;
+  border: 0;
+  border-bottom: 4px solid var(--player-color);
+  border-radius: 8px 8px 0 0;
+  background: var(--panel);
+  color: var(--text-dim);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tab.selected {
+  background: var(--panel-raised);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.sheet-title {
+  margin: 12px 0 8px;
+  color: var(--text);
+  font-size: 18px;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.sheet table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-variant-numeric: tabular-nums;
+}
+
+.sheet td {
+  padding: 6px 4px;
+  border-bottom: 1px solid #262626;
+  font-size: 18px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sheet-header td {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sheet-name td {
+  padding-top: 14px;
+  font-weight: 700;
+}
+
+.log-line {
+  padding: 5px 0;
+  border-bottom: 1px solid #262626;
+  font-size: 14px;
+  line-height: 1.35;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.log-line.reset {
+  color: #797979;
+}
+
+.empty {
+  color: var(--text-dim);
+  text-align: center;
+}
+
+/* Styling bar, in the middle of the screen so both sides of the board stay visible. */
+
+.styling-catcher {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  touch-action: manipulation;
+}
+
+.styling-bar {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 26;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(94vw, 440px);
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(31, 31, 31, 0.96);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  transform: translate(-50%, -50%);
+  touch-action: manipulation;
+}
+
+.segmented.small .segment {
+  height: 38px;
+  padding: 0 4px;
+  font-size: 14px;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider {
+  flex: 1;
+  height: 36px;
+  accent-color: var(--accent);
+}
+
+.slider-label {
+  flex: none;
+  min-width: 84px;
+  font-size: 15px;
+  text-align: right;
+}
+
+.slider-label.swatch-label {
+  min-width: 36px;
+  height: 36px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+}
+
+/* Settings fields */
+
+.card {
+  margin-bottom: 10px;
+  padding: 4px 14px;
+  border-radius: 14px;
+  background: var(--panel);
+}
+
+.card-row + .card-row {
+  border-top: 1px solid #2a2a2a;
+}
+
+.card-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 60px;
+}
+
+.card-title {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.card-line .segmented {
+  flex: 0 1 200px;
+}
+
+.field-label {
+  font-size: 16px;
+}
+
+.stepper {
+  display: flex;
+  flex: none;
+  gap: 6px;
+}
+
+.step {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--panel-raised);
+  font-size: 22px;
+}
+
+.step:active {
+  background: #444;
+}
+
+.stepper-value,
+.text-field {
+  height: 44px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: var(--panel-raised);
+  color: var(--text);
+  font: inherit;
+  font-size: 18px;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.stepper-value {
+  width: 64px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.text-field {
+  flex: 0 1 200px;
+  min-width: 0;
+  padding: 0 12px;
+  font-size: 16px;
+}
+
+.stepper-value:focus,
+.text-field:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.card-row .field-hint {
+  margin: -6px 0 12px;
+}
+
+.field-hint {
+  margin: 6px 0 4px;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.switch {
+  flex: none;
+  position: relative;
+  width: 50px;
+  height: 30px;
+  margin: 0;
+  border-radius: 15px;
+  background: #444;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background 0.2s;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+}
+
+.switch:checked {
+  background: var(--accent);
+}
+
+.switch:checked::after {
+  transform: translateX(20px);
+}
+
+.button.danger {
+  background: #c0392b;
+  color: #fff;
+  font-weight: 600;
+}
+
+.button.wide {
+  width: 100%;
+}
+
+.menu-pair .menu-item {
+  flex-direction: column;
+}
+
+/* A small on/off indicator, used for the fullscreen item in the menu. */
+.switch-indicator {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
+  background: #555;
+}
+
+.switch-indicator::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.switch-indicator.on {
+  background: var(--accent);
+}
+
+.switch-indicator.on::after {
+  left: 21px;
+}
+
+/* A small (i) next to a settings label that shows or hides its explanation. */
+.info-button {
+  width: 22px;
+  height: 22px;
+  margin-left: 8px;
+  padding: 0;
+  border: 1.5px solid var(--text-dim);
+  border-radius: 50%;
+  background: none;
+  color: var(--text-dim);
+  font: italic 700 13px/1 Georgia, serif;
+  vertical-align: middle;
+}
+
+/* Random starting player */
+
+.pick-layer {
+  position: fixed;
+  z-index: 12;
+  display: flex;
+  touch-action: manipulation;
+}
+
+.pick-area {
+  background: rgba(0, 0, 0, 0.6);
+  transition: background 0.12s;
+}
+
+.pick-area.lit {
+  background: rgba(241, 196, 15, 0.25);
+  box-shadow: inset 0 0 0 4px #f1c40f;
+}
+
+.pick-face {
+  align-items: center;
+  justify-content: center;
+}
+
+.pick-label {
+  padding: 0.1em 0.5em 0.15em;
+  border-radius: 0.4em;
+  background: rgba(0, 0, 0, 0.75);
+  color: #f1c40f;
+  font-size: min(16cqh, 14cqw);
+  font-weight: 700;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.3s, transform 0.4s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+.pick-area.chosen .pick-label {
+  opacity: 1;
+  transform: none;
+}
+
+/* "Update available — tap to reload" */
+.update-notice {
+  position: fixed;
+  left: 50%;
+  top: max(12px, env(safe-area-inset-top));
+  z-index: 50;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--accent);
+  color: #000;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  transform: translateX(-50%);
+}
+
+/* Help */
+
+.help-content h2 {
+  margin: 22px 0 6px;
+  color: var(--accent);
+  font-size: 15px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.help-content p {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.about {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.about-icon {
+  width: 96px;
+  height: 96px;
+  margin-top: 24px;
+}
+
+.help-content .about-name {
+  color: var(--text);
+  font-size: 20px;
+}
+
+.about-link {
+  display: grid;
+  place-items: center;
+  margin: 12px 0;
+  text-decoration: none;
+}
+
+.about-email {
+  color: var(--accent);
+  font-size: 15px;
+}
+
+.help-content .about-credits {
+  margin-top: 28px;
+  color: var(--text-dim);
+  font-size: 12px;
+}
