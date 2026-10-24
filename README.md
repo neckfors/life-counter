@@ -34,6 +34,35 @@ offline.
 - **Fullscreen**, **keep screen awake** and **vibrate on tap**.
 - **Everything is saved automatically**, after every change.
 
+## Layouts for 1–6 players
+
+Each player count has a few layouts to choose from in Settings, shown there as small previews.
+Players can face each other across the table, sit along the long sides, or all face the same way.
+With 2 players, both players can also be shown on each side, so everyone sees every total.
+
+<p>
+  <img src="docs/layout-1.png" alt="One player" width="160">
+  <img src="docs/layout-3.png" alt="Three players: one at the end, two along the sides" width="160">
+  <img src="docs/layout-5.png" alt="Five players: three against two" width="160">
+  <img src="docs/layout-6.png" alt="Six players: three against three, sideways" width="160">
+</p>
+
+*From left: 1 player · 3 players, one at the end and two along the sides · 5 players, three
+against two · 6 players, three against three, sideways.*
+
+## Styling
+
+The text size, typeface (Normal, Bold, Condensed or Serif) and colour can be changed for life,
+names and counters, and the board shows the change as you drag the slider. Each player picks
+their own background colour. Either counter can be hidden; life then gets the extra space.
+
+<p>
+  <img src="docs/styling.png" alt="Condensed typeface, larger life, custom colours and one counter hidden" width="200">
+</p>
+
+*Condensed typeface, life at 120%, orange counter, dark blue and red backgrounds, and the second
+counter hidden.*
+
 ## Install on your phone
 
 - **Android (Chrome):** open the app, then menu ⋮ → **Install app** (or **Add to Home screen**).

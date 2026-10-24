@@ -11,6 +11,21 @@ import { openHistory } from './history-screen.js';
 import { openStyling } from './styling.js';
 import { fullscreenSupported, toggleFullscreen } from './device.js';
 
+// A gear: 8 teeth around a hole, drawn as one outline.
+function gearPath(teeth = 8, outer = 10, inner = 7.6) {
+  const points = [];
+  for (let i = 0; i < teeth; i++) {
+    const step = (2 * Math.PI) / teeth;
+    const start = i * step - Math.PI / 2;
+    // Each tooth: up the left flank, across the top, down the right flank, then along the base.
+    for (const [angle, radius] of [[0, inner], [0.18, outer], [0.5, outer], [0.68, inner]]) {
+      const a = start + angle * step;
+      points.push(`${(12 + radius * Math.cos(a)).toFixed(2)} ${(12 + radius * Math.sin(a)).toFixed(2)}`);
+    }
+  }
+  return `<path d="M${points.join('L')}Z"/><circle cx="12" cy="12" r="3"/>`;
+}
+
 // Simple line icons (24×24, drawn with the current text colour).
 const ICONS = {
   reset: '<path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/>',
@@ -21,7 +36,7 @@ const ICONS = {
   fullscreen: '<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/>',
   history: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/>',
   styling: '<path d="M4 19l5-14 5 14M5.8 14h6.4"/><path d="M15.5 12.5a2.8 2.8 0 1 1 0 5.6 2.8 2.8 0 0 1 0-5.6zM18.3 12.5V19"/>',
-  settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+  settings: gearPath(),
   help: '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .9-1 1.6v.4"/><circle cx="12" cy="17" r=".6"/>',
 };
 
@@ -52,9 +67,19 @@ export function openMenu() {
     starting,
   ];
   if (fullscreenSupported) {
-    const on = state.settings.fullscreen;
-    const fullscreen = tile('fullscreen', `Fullscreen: ${on ? 'on' : 'off'}`, toggleFullscreen);
-    fullscreen.classList.toggle('on', on);
+    // Switches in place and keeps the menu open, so the change is visible and more can be done.
+    const label = el('span', 'menu-label');
+    const fullscreen = button('', () => {
+      toggleFullscreen();
+      show();
+    }, 'menu-item');
+    const show = () => {
+      const on = state.settings.fullscreen;
+      label.textContent = `Fullscreen: ${on ? 'on' : 'off'}`;
+      fullscreen.classList.toggle('on', on);
+    };
+    fullscreen.append(icon('fullscreen'), label);
+    show();
     tiles.push(fullscreen);
   } else {
     starting.classList.add('wide');
