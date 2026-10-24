@@ -1,4 +1,4 @@
-// The centre menu.
+// The centre menu: a grid of equal tiles, two per row, each with an icon and a label.
 
 import { state } from './state.js';
 import { el, button, openOverlay } from './dom.js';
@@ -11,32 +11,59 @@ import { openHistory } from './history-screen.js';
 import { openStyling } from './styling.js';
 import { fullscreenSupported, toggleFullscreen } from './device.js';
 
+// Simple line icons (24×24, drawn with the current text colour).
+const ICONS = {
+  reset: '<path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/>',
+  resetAll: '<path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/><circle cx="12" cy="12" r="2.2"/>',
+  dice: '<rect x="2.5" y="8" width="11" height="11" rx="2.5"/><path d="M10.5 5.5l1-2.4a2 2 0 0 1 2.6-1l5.6 2.4a2 2 0 0 1 1 2.6l-2.3 5.5"/><circle cx="6" cy="11.5" r=".9"/><circle cx="10" cy="15.5" r=".9"/>',
+  die: '<rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="8.5" cy="8.5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="15.5" cy="15.5" r="1"/>',
+  start: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+  fullscreen: '<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/>',
+  history: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/>',
+  styling: '<path d="M4 19l5-14 5 14M5.8 14h6.4"/><path d="M15.5 12.5a2.8 2.8 0 1 1 0 5.6 2.8 2.8 0 0 1 0-5.6zM18.3 12.5V19"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+  help: '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .9-1 1.6v.4"/><circle cx="12" cy="17" r=".6"/>',
+};
+
+function icon(name) {
+  const wrap = el('span', 'menu-icon');
+  wrap.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
+  return wrap;
+}
+
 export function openMenu() {
   const { panel, close } = openOverlay({ className: 'menu', onDismiss: () => close() });
 
-  const item = (text, action) => button(text, () => {
-    close();
-    action();
-  }, 'menu-item');
-  const pair = (...items) => {
-    const row = el('div', 'menu-pair');
-    row.append(...items);
-    return row;
+  const tile = (iconName, text, action) => {
+    const element = button('', () => {
+      close();
+      action();
+    }, 'menu-item');
+    element.append(icon(iconName), el('span', 'menu-label', text));
+    return element;
   };
 
-  panel.append(
-    pair(item('Reset life', () => reset(false)), item('Reset life and counters', () => reset(true))),
-    pair(item('Roll for all players', rollForAll), item('Roll one die', rollOne)),
-    item('Random starting player', pickStartingPlayer),
-    pair(item('History', openHistory), item('Styling', openStyling)),
-    pair(item('Settings', openSettings), item('Help', openHelp)),
-  );
-
+  const starting = tile('start', 'Random starting player', pickStartingPlayer);
+  const tiles = [
+    tile('reset', 'Reset life', () => reset(false)),
+    tile('resetAll', 'Reset life and counters', () => reset(true)),
+    tile('dice', 'Roll for all players', rollForAll),
+    tile('die', 'Roll one die', rollOne),
+    starting,
+  ];
   if (fullscreenSupported) {
-    const fullscreen = item('Fullscreen', toggleFullscreen);
-    const indicator = el('span', 'switch-indicator');
-    indicator.classList.toggle('on', state.settings.fullscreen);
-    fullscreen.append(indicator);
-    panel.append(fullscreen);
+    const on = state.settings.fullscreen;
+    const fullscreen = tile('fullscreen', `Fullscreen: ${on ? 'on' : 'off'}`, toggleFullscreen);
+    fullscreen.classList.toggle('on', on);
+    tiles.push(fullscreen);
+  } else {
+    starting.classList.add('wide');
   }
+  tiles.push(
+    tile('history', 'History', openHistory),
+    tile('styling', 'Styling', openStyling),
+    tile('settings', 'Settings', openSettings),
+    tile('help', 'Help', openHelp),
+  );
+  panel.append(...tiles);
 }

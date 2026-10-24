@@ -371,24 +371,66 @@ button {
 
 /* Menu */
 
+/* Two equal columns of tiles; every row is as tall as the tallest tile, so all tiles match. */
 .menu {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: 8px;
+  width: min(88vw, 360px);
+  padding: 10px;
 }
 
 .menu-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  min-height: 50px;
-  padding: 0 16px;
-  border: 0;
-  border-radius: 10px;
+  justify-content: center;
+  gap: 6px;
+  min-height: 78px;
+  padding: 10px 8px;
+  border: 2px solid transparent;
+  border-radius: 12px;
   background: var(--panel-raised);
-  font-size: 17px;
-  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.menu-item:active {
+  background: #3a3a3a;
+}
+
+.menu-item.wide {
+  grid-column: span 2;
+}
+
+/* Fullscreen when switched on. */
+.menu-item.on {
+  border-color: var(--accent);
+}
+
+.menu-item.on .menu-icon {
+  color: var(--accent);
+}
+
+.menu-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  color: var(--text-dim);
+}
+
+.menu-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 
@@ -552,20 +594,6 @@ button {
 
 .button.confirm {
   background: #c0392b;
-}
-
-.menu-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
-
-.menu-pair .menu-item {
-  justify-content: center;
-  padding: 6px 10px;
-  font-size: 15px;
-  line-height: 1.2;
-  text-align: center;
 }
 
 /* Undo after a reset, just below the menu button. */
@@ -1107,39 +1135,6 @@ button {
 
 .button.wide {
   width: 100%;
-}
-
-.menu-pair .menu-item {
-  flex-direction: column;
-}
-
-/* A small on/off indicator, used for the fullscreen item in the menu. */
-.switch-indicator {
-  position: relative;
-  flex: none;
-  width: 44px;
-  height: 26px;
-  border-radius: 13px;
-  background: #555;
-}
-
-.switch-indicator::after {
-  content: "";
-  position: absolute;
-  left: 3px;
-  top: 3px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #fff;
-}
-
-.switch-indicator.on {
-  background: var(--accent);
-}
-
-.switch-indicator.on::after {
-  left: 21px;
 }
 
 /* A small (i) next to a settings label that shows or hides its explanation. */
