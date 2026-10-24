@@ -3,7 +3,7 @@
 import { el, button, openScreen } from './dom.js';
 
 // The PayPal.me link in About; the line is left out while this is empty.
-const PAYPAL_URL = '';
+const PAYPAL_URL = 'https://paypal.me/neckfors';
 const EMAIL = 'neckfors@gmail.com';
 
 // Each topic: [heading, text]. Text may hold several paragraphs.
