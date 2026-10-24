@@ -5,7 +5,7 @@ import {
 } from './state.js';
 import { LAYOUTS, getLayout, buildTree } from './layouts.js';
 import { el, button, openScreen, openOverlay } from './dom.js';
-import { wakeLockSupported, vibrationSupported, fullscreenSupported } from './device.js';
+import { wakeLockSupported, vibrationSupported, fullscreenSupported, appIsFullscreen } from './device.js';
 
 export function openSettings() {
   const { body } = openScreen('Settings');
@@ -80,8 +80,10 @@ export function openSettings() {
     row('Starting value', stepper(`startCounter${key}`, { min: -999, max: 9999 })),
   )));
   const device = section('Device', card(
-    row('Fullscreen', toggle('fullscreen'),
-      fullscreenSupported ? 'The browser may still show the status bar at times.' : 'Not available on this device.'),
+    row('Fullscreen', toggle('fullscreen', !fullscreenSupported),
+      appIsFullscreen ? 'The installed app always runs fullscreen.'
+        : fullscreenSupported ? 'The browser may still show the status bar at times.'
+        : 'Not available on this device.'),
     row('Keep screen awake', toggle('keepAwake'),
       wakeLockSupported ? '' : 'Not available here. It works when the app is opened over https.'),
     row('Vibrate on tap', toggle('vibrate'), vibrationSupported ? 'Android only.' : 'Not available on this device.'),
@@ -179,10 +181,11 @@ function choice(key, options) {
   return element;
 }
 
-function toggle(key) {
+function toggle(key, disabled = false) {
   const input = el('input', 'switch');
   input.type = 'checkbox';
   input.checked = state.settings[key];
+  input.disabled = disabled;
   input.addEventListener('change', () => setSetting(key, input.checked));
   return input;
 }

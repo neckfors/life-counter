@@ -35,7 +35,7 @@ const TABS = {
       'Random starting player: picks who goes first.',
       'History: a score sheet for each player, and Details with every change and its time. Quick changes within 3 seconds count as one.',
       'Styling: text size, typeface and colour for life, names and counters.',
-      'Fullscreen: hides the browser and status bar.',
+      'Fullscreen: hides the browser and status bar. The installed app on Android always opens fullscreen, so it has no Fullscreen button.',
     ]],
     ['Saving and installing', [
       'Everything is saved automatically after every change.',
@@ -56,7 +56,7 @@ const TABS = {
       'Number of players (1–6), the layout (which way each player faces), and each player’s background colour. Changing the number of players keeps the values and names of the players already in the game.',
     ]],
     ['Device', [
-      'Fullscreen: hides the browser and status bar. Not available on iPhone; install the app instead.',
+      'Fullscreen: hides the browser and status bar, until switched off. The installed app on Android always runs fullscreen. Not available on iPhone; install the app instead.',
       'Keep screen awake: stops the screen from turning off during a game.',
       'Vibrate on tap: a short buzz when a value changes (Android only).',
     ]],

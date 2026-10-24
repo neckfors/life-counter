@@ -4,12 +4,15 @@ import { state, events, setSetting } from './state.js';
 
 export const wakeLockSupported = 'wakeLock' in navigator;
 export const vibrationSupported = 'vibrate' in navigator;
-export const fullscreenSupported = Boolean(document.fullscreenEnabled);
+// The installed app always runs fullscreen (manifest "display": "fullscreen"), so there is nothing to
+// switch there.
+export const appIsFullscreen = matchMedia('(display-mode: fullscreen)').matches;
+export const fullscreenSupported = Boolean(document.fullscreenEnabled) && !appIsFullscreen;
 
 let wakeLock = null;
 
-// Browsers only allow fullscreen from a tap. Switching it on (menu or settings) is a tap; after the
-// app is opened with the setting on, it is entered on the first tap.
+// In the browser, fullscreen is only entered when switched on (menu or settings): browsers only allow
+// it from a tap, and it should not happen by surprise on the first tap.
 function updateFullscreen() {
   if (!fullscreenSupported) return;
   if (state.settings.fullscreen && !document.fullscreenElement) {
@@ -54,7 +57,8 @@ export function vibrate() {
 }
 
 export function initDevice() {
-  document.addEventListener('pointerup', updateFullscreen, { once: true });
+  // The app always starts out of fullscreen, so the setting starts off to match.
+  state.settings.fullscreen = false;
   document.addEventListener('fullscreenchange', onFullscreenChange);
   document.addEventListener('visibilitychange', updateWakeLock);
   events.addEventListener('settings', ({ detail }) => {

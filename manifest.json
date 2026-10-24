@@ -4,7 +4,7 @@
   "description": "Life counter for card games, for 1–6 players around the table.",
   "start_url": "./",
   "scope": "./",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#000000",

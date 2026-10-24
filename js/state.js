@@ -27,7 +27,7 @@ function defaults() {
       counterTwoName: 'Counter#2',
       dieSize: 6,
       swipeAmount: 5,
-      fullscreen: true,
+      fullscreen: false,
       keepAwake: true,
       vibrate: false,
     },
