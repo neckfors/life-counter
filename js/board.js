@@ -237,7 +237,29 @@ export function render() {
     area.counterTwo.element.hidden = !s.showCounterTwo;
     area.counters.hidden = bothHidden;
   }
+  equalizeSizes();
 }
+
+// Gives every area the same text sizes: the smallest that any area works out from its own space
+// (see the size rules in style.css). The sizes depend on each area's shape, so this runs again
+// whenever the layout, screen size, styling or counter visibility changes.
+const SIZES = [
+  ['--life-size', area => area.life.wrap],
+  ['--counters-size', area => area.counterOne.wrap],
+  ['--name-size', area => area.nameText],
+];
+
+function equalizeSizes() {
+  for (const [name] of SIZES) board.style.removeProperty(name);
+  if (!areas.length) return;
+  const smallest = SIZES.map(([, element]) =>
+    Math.min(...areas.map(area => parseFloat(getComputedStyle(element(area)).fontSize))));
+  SIZES.forEach(([name], i) => board.style.setProperty(name, `${smallest[i]}px`));
+}
+
+new ResizeObserver(() => equalizeSizes()).observe(board);
+// Styling changes are applied to the page first (styling.js), so measure once they are in place.
+events.addEventListener('styling', () => requestAnimationFrame(equalizeSizes));
 
 events.addEventListener('change', ({ detail }) => {
   render();
