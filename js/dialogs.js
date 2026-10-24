@@ -87,7 +87,6 @@ export function openNameDialog({ current, rot, taken }) {
     const star = button('', () => {
       toggleFavorite(input.value.trim());
       update();
-      input.focus();
     }, 'star');
     const inputRow = el('div', 'input-row');
     inputRow.append(input, star);
@@ -134,13 +133,8 @@ export function openNameDialog({ current, rot, taken }) {
     panel.append(el('h2', '', 'Player name'), form);
     update();
 
-    // The dialog opens while the finger is still down; browsers only show the keyboard for a focus
-    // made during a user gesture, so focus again when the finger is lifted.
-    const focus = () => {
-      input.focus();
-      input.select();
-    };
-    focus();
-    window.addEventListener('pointerup', focus, { once: true });
+    // The keyboard only comes up when the text box is tapped, since a favourite is usually picked
+    // instead. Tapping it selects the name, so typing replaces it.
+    input.addEventListener('focus', () => input.select());
   });
 }
