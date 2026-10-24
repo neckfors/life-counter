@@ -1176,6 +1176,11 @@ button {
 }
 
 .pick-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 90%;
+  text-align: center;
   padding: 0.1em 0.5em 0.15em;
   border-radius: 0.4em;
   background: rgba(0, 0, 0, 0.75);
@@ -1262,4 +1267,12 @@ button {
   margin-top: 28px;
   color: var(--text-dim);
   font-size: 12px;
+}
+
+/* The starting player's name, above "starts!". Long names are cut off with an ellipsis. */
+.pick-name {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

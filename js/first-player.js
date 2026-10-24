@@ -1,5 +1,5 @@
 // Random starting player: a highlight runs around the table through the players' areas, slows down
-// and stops on one, which shows "Starts!". Tap anywhere to dismiss.
+// and stops on one, which shows "<name> starts!". Tap anywhere to dismiss.
 
 import { state } from './state.js';
 import { getLayout, buildTree } from './layouts.js';
@@ -29,9 +29,10 @@ export function pickStartingPlayer() {
     const face = el('div', 'face pick-face');
     face.style.setProperty('--rot', `${rot}deg`);
     if (rot % 180) face.classList.add('sideways');
-    face.append(el('div', 'pick-label', 'Starts!'));
+    const label = el('div', 'pick-label');
+    face.append(label);
     area.append(face);
-    cells.push({ player, area });
+    cells.push({ player, area, label });
     return area;
   }));
   layer.addEventListener('click', close);
@@ -51,7 +52,12 @@ export function pickStartingPlayer() {
   const light = (index, done) => {
     for (const cell of cells) cell.area.classList.toggle('lit', cell.player === order[index]);
     if (done) {
-      for (const cell of cells) cell.area.classList.toggle('chosen', cell.player === order[index]);
+      for (const cell of cells) {
+        const isChosen = cell.player === order[index];
+        cell.area.classList.toggle('chosen', isChosen);
+        // The name makes it clear who starts, even for players who see the area from the side.
+        if (isChosen) cell.label.replaceChildren(el('span', 'pick-name', state.players[cell.player].name), el('span', '', 'starts!'));
+      }
       vibrate();
     }
   };
