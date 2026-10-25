@@ -1223,6 +1223,15 @@ button {
 }
 
 /* "Update available — tap to reload" */
+.update-notice.fullscreen-notice {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 10px 18px;
+  white-space: normal;
+}
+
 .update-notice {
   position: fixed;
   left: 50%;

@@ -1,6 +1,6 @@
 // The centre menu: a grid of equal tiles, two per row, each with an icon and a label.
 
-import { state } from './state.js';
+import { state, events } from './state.js';
 import { el, button, openOverlay } from './dom.js';
 import { reset } from './reset.js';
 import { rollForAll, rollOne } from './dice.js';
@@ -81,6 +81,13 @@ export function openMenu() {
     };
     fullscreen.append(icon('fullscreen'), label);
     show();
+    // The setting also changes on its own (the browser refuses, or fullscreen is left with the back
+    // gesture), so the tile follows it while the menu is open.
+    const follow = ({ detail }) => {
+      if (!fullscreen.isConnected) events.removeEventListener('settings', follow);
+      else if (detail.key === 'fullscreen') show();
+    };
+    events.addEventListener('settings', follow);
     tiles.push(fullscreen);
   } else {
     starting.classList.add('wide');

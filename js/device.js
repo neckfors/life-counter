@@ -1,6 +1,7 @@
 // Fullscreen, keeping the screen awake and vibration.
 
 import { state, events, setSetting } from './state.js';
+import { el } from './dom.js';
 
 export const wakeLockSupported = 'wakeLock' in navigator;
 export const vibrationSupported = 'vibrate' in navigator;
@@ -19,11 +20,24 @@ function updateFullscreen() {
     // The phone lies flat, so keep it from turning to landscape when someone moves it. Browsers only
     // allow locking the orientation in fullscreen (the installed app is locked by its manifest).
     document.documentElement.requestFullscreen({ navigationUI: 'hide' })
-      .then(() => screen.orientation?.lock?.('portrait'))
-      .catch(() => {});
+      .then(() => screen.orientation?.lock?.('portrait')?.catch(() => {}))
+      .catch(error => {
+        // The browser said no: switch back off, so the next tap tries again, and say why.
+        setSetting('fullscreen', false);
+        showNotice(`Fullscreen didn't work: ${error.message || error.name}`);
+      });
   } else if (!state.settings.fullscreen && document.fullscreenElement) {
     document.exitFullscreen().catch(() => {});
   }
+}
+
+const NOTICE_MS = 5000;
+
+function showNotice(text) {
+  document.querySelector('.fullscreen-notice')?.remove();
+  const notice = el('div', 'update-notice fullscreen-notice', text);
+  document.body.append(notice);
+  setTimeout(() => notice.remove(), NOTICE_MS);
 }
 
 export function toggleFullscreen() {
