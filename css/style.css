@@ -90,21 +90,23 @@ button {
   container-type: size;
 }
 
-/* The player's area, rotated to face them. Sideways areas swap width and height. */
+/* The player's area, rotated to face them. Sideways areas swap width and height. On the board,
+   --face-w / --face-h (set by board.js) make every player's box the same size, centred in their
+   area; the dice and starting-player layers fill their areas. */
 .face {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 100cqw;
-  height: 100cqh;
+  width: var(--face-w, 100cqw);
+  height: var(--face-h, 100cqh);
   display: flex;
   flex-direction: column;
   transform: translate(-50%, -50%) rotate(var(--rot));
 }
 
 .face.sideways {
-  width: 100cqh;
-  height: 100cqw;
+  width: var(--face-w, 100cqh);
+  height: var(--face-h, 100cqw);
 }
 
 .life,
@@ -176,15 +178,14 @@ button {
   text-box: trim-both cap alphabetic;
 }
 
-/* Each area works out a text size from its own space (below). Life keeps its own size, so a
-   bigger area gets a bigger number. For counters and names, board.js sets --counters-size and
-   --name-size to the smallest of all areas, so that small text is the same for every player. */
+/* Text sizes follow the space of each part of the player's box; every player's box is the same
+   size (see .face), so the text is the same size for everyone. */
 .life .value {
   font-size: calc(min(66cqh, 44cqw * var(--life-widen, 1)) * var(--life-scale, 1));
 }
 
 .counter .value {
-  font-size: var(--counters-size, calc(min(95cqh, 17cqw * var(--counters-widen, 1)) * var(--counters-scale, 1)));
+  font-size: calc(min(95cqh, 17cqw * var(--counters-widen, 1)) * var(--counters-scale, 1));
 }
 
 /* Trimmed to the top of the capitals; the padding and negative margin keep accents (Å, Ö) from being
@@ -197,7 +198,7 @@ button {
   white-space: nowrap;
   text-overflow: ellipsis;
   text-box: trim-both cap text;
-  font-size: var(--name-size, calc(min(78cqh, 10cqw * var(--name-widen, 1)) * var(--name-scale, 1)));
+  font-size: calc(min(78cqh, 10cqw * var(--name-widen, 1)) * var(--name-scale, 1));
 }
 
 /* The running change, e.g. "−3", centred above the number. */

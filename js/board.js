@@ -19,6 +19,7 @@ export function buildBoard() {
   const { playerCount, layouts } = state.settings;
   areas = [];
   board.replaceChildren(buildTree(getLayout(playerCount, layouts[playerCount]).tree, makeArea));
+  sizeBoxes();
   render();
 }
 
@@ -237,42 +238,20 @@ export function render() {
     area.counterTwo.element.hidden = !s.showCounterTwo;
     area.counters.hidden = bothHidden;
   }
-  equalizeSizes();
 }
 
-// Gives every area the same counter and name sizes: the smallest that any area works out from its
-// own space (see the size rules in style.css). Life is left to each area, so bigger areas get
-// bigger numbers. The sizes depend on each area's shape, so this runs again whenever the layout,
-// screen size, styling or counter visibility changes.
-const SIZES = [
-  ['--counters-size', area => area.counterOne.wrap],
-  ['--name-size', area => area.nameText],
-];
-
-// Bigger areas keep a bigger life number, but toned down to this share of their own size (never
-// below the smallest life on the board).
-const BIGGER_LIFE = 0.9;
-
-function equalizeSizes() {
-  for (const [name] of SIZES) board.style.removeProperty(name);
-  for (const area of areas) area.life.wrap.style.removeProperty('font-size');
+// Every player's content (life, counters, name) sits in a box of the same size, centred in their
+// area, so all text is the same size for everyone. The box is the largest that fits in every area
+// as its player sees it; the rest of a bigger area is just the player's colour.
+function sizeBoxes() {
   if (!areas.length) return;
-  const smallest = SIZES.map(([, element]) =>
-    Math.min(...areas.map(area => parseFloat(getComputedStyle(element(area)).fontSize))));
-  SIZES.forEach(([name], i) => board.style.setProperty(name, `${smallest[i]}px`));
-
-  const lifeSizes = areas.map(area => parseFloat(getComputedStyle(area.life.wrap).fontSize));
-  const smallestLife = Math.min(...lifeSizes);
-  areas.forEach((area, i) => {
-    if (lifeSizes[i] > smallestLife) {
-      area.life.wrap.style.fontSize = `${Math.max(smallestLife, lifeSizes[i] * BIGGER_LIFE)}px`;
-    }
-  });
+  const views = areas.map(({ area, rot }) =>
+    rot % 180 ? [area.clientHeight, area.clientWidth] : [area.clientWidth, area.clientHeight]);
+  board.style.setProperty('--face-w', `${Math.min(...views.map(([w]) => w))}px`);
+  board.style.setProperty('--face-h', `${Math.min(...views.map(([, h]) => h))}px`);
 }
 
-new ResizeObserver(() => equalizeSizes()).observe(board);
-// Styling changes are applied to the page first (styling.js), so measure once they are in place.
-events.addEventListener('styling', () => requestAnimationFrame(equalizeSizes));
+new ResizeObserver(sizeBoxes).observe(board);
 
 events.addEventListener('change', ({ detail }) => {
   render();
