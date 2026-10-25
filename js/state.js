@@ -66,7 +66,7 @@ function load() {
 export const state = load();
 
 // Fired events: 'change' (detail: { player, field, from, to }), 'name', 'reset', 'layout', 'colors',
-// 'favorites', 'settings' (detail: { key }), 'styling'.
+// 'favorites', 'settings' (detail: { key }), 'styling', 'swap'.
 export const events = new EventTarget();
 
 function emit(type, detail) {
@@ -92,6 +92,15 @@ export function setValue(player, field, to) {
   state.players[player][field] = to;
   save();
   emit('change', { player, field, from, to });
+}
+
+// Two players swap seats: name, life and counters move together; each seat keeps its colour.
+export function swapPlayers(a, b) {
+  const pa = state.players[a];
+  const pb = state.players[b];
+  for (const key of ['name', ...FIELDS]) [pa[key], pb[key]] = [pb[key], pa[key]];
+  save();
+  emit('swap');
 }
 
 export function setName(player, name) {

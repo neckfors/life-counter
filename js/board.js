@@ -1,6 +1,6 @@
 // The game board: builds each player's area from the layout and handles taps, swipes and holds.
 
-import { state, events, setValue, setName } from './state.js';
+import { state, events, setValue, setName, swapPlayers } from './state.js';
 import { getLayout, buildTree } from './layouts.js';
 import { el } from './dom.js';
 import { openValueDialog, openNameDialog } from './dialogs.js';
@@ -74,13 +74,18 @@ async function editValue(player, field, rot) {
   if (value !== null) setValue(player, field, value);
 }
 
+// Choosing a name another player in the game has swaps the two players (name, life and counters),
+// e.g. when people sit in different seats than last game.
 async function renamePlayer(player, rot) {
-  const taken = state.players
+  const others = state.players
+    .map((p, i) => ({ name: p.name, i }))
     .slice(0, state.settings.playerCount)
-    .filter((_, i) => i !== player)
-    .map(p => p.name);
-  const name = await openNameDialog({ current: state.players[player].name, rot, taken });
-  if (name !== null) setName(player, name);
+    .filter(({ i }) => i !== player);
+  const name = await openNameDialog({ current: state.players[player].name, rot, taken: others.map(o => o.name) });
+  if (name === null) return;
+  const other = others.find(o => o.name === name);
+  if (other) swapPlayers(player, other.i);
+  else setName(player, name);
 }
 
 // Converts a point on screen into the player's own view of their area: x from the left and y from
@@ -261,6 +266,10 @@ events.addEventListener('name', render);
 events.addEventListener('colors', render);
 events.addEventListener('settings', render);
 events.addEventListener('reset', () => {
+  clearRunningChanges();
+  render();
+});
+events.addEventListener('swap', () => {
   clearRunningChanges();
   render();
 });

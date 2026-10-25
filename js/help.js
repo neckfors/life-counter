@@ -23,6 +23,7 @@ const TABS = {
     ['Player names and favourites', [
       'Hold a name for about a second to rename the player.',
       'Tap ☆ to save the name as a favourite. Favourites are listed in the same dialog: tap one to use it, or × to remove it.',
+      'Picking a name another player has (marked ⇄) swaps the two players: name, life and counters change places. Handy when people sit in different seats than last game.',
     ]],
     ['The running change', [
       'While a value is being changed, the total change (e.g. −3) is shown above the number. It fades about 3 seconds after the last change.',

@@ -675,9 +675,6 @@ button {
   padding: 0 4px 0 14px;
 }
 
-.chip-name:disabled {
-  opacity: 0.35;
-}
 
 .chip-remove {
   padding: 0 12px 0 8px;

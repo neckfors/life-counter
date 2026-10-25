@@ -68,7 +68,8 @@ export function openValueDialog({ title, current, rot }) {
 }
 
 // Resolves with the new name, or null if cancelled. Tapping a favourite picks it straight away;
-// favourites in taken (names other players already use) are greyed out.
+// favourites in taken (names other players already use) are marked ⇄, since picking one swaps the
+// two players (see renamePlayer in board.js).
 export function openNameDialog({ current, rot, taken }) {
   return new Promise(resolve => {
     const finish = value => {
@@ -108,8 +109,10 @@ export function openNameDialog({ current, rot, taken }) {
       const chips = el('div', 'chips');
       for (const favorite of state.favorites) {
         const chip = el('div', 'chip');
-        const pick = button(favorite, () => finish(favorite), 'chip-name');
-        pick.disabled = taken.includes(favorite);
+        // A name another player has is marked ⇄: picking it swaps the two players.
+        const isTaken = taken.includes(favorite);
+        const pick = button(isTaken ? `${favorite} ⇄` : favorite, () => finish(favorite), 'chip-name');
+        if (isTaken) pick.setAttribute('aria-label', `Swap with ${favorite}`);
         const remove = button('×', () => {
           toggleFavorite(favorite);
           update();
