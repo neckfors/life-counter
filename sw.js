@@ -2,7 +2,7 @@
 // Bump VERSION whenever anything is published; that is how phones notice the update. Add new files
 // to FILES.
 
-const VERSION = 15;
+const VERSION = 16;
 const CACHE = `neckfors-life-counter-${VERSION}`;
 
 const FILES = [

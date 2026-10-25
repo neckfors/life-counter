@@ -4,6 +4,8 @@
 
 import { button } from './dom.js';
 
+const CHECK_INTERVAL = 30 * 60 * 1000;
+
 let updating = false;
 
 function showUpdate(worker) {
@@ -43,8 +45,12 @@ export async function initUpdates() {
     location.reload();
   });
 
-  // Check for a new version whenever the app is opened again.
+  // Check for a new version whenever the app is opened again, and every 30 minutes while it is open.
+  const check = () => registration.update().catch(() => {});
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') registration.update().catch(() => {});
+    if (document.visibilityState === 'visible') check();
   });
+  setInterval(() => {
+    if (document.visibilityState === 'visible') check();
+  }, CHECK_INTERVAL);
 }
