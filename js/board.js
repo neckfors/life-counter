@@ -9,6 +9,7 @@ import { vibrate } from './device.js';
 const MOVE_PX = 15;           // Movement that turns a tap into a swipe.
 const HOLD_MS = 1000;         // Holding this long without moving opens a dialog.
 const CHANGE_MS = 3000;       // The running change fades this long after the last change.
+const EDGE_PX = 24;           // Touches starting this close to the top or bottom edge are ignored.
 const MINUS = '−';
 
 const board = document.getElementById('board');
@@ -153,6 +154,8 @@ function addGestures(entry) {
   };
 
   area.addEventListener('pointerdown', event => {
+    // A swipe in from the top or bottom edge opens the phone's status or navigation bar.
+    if (event.clientY < EDGE_PX || event.clientY > innerHeight - EDGE_PX) return;
     area.setPointerCapture(event.pointerId);
     const gesture = { start: toLocal(entry, event.clientX, event.clientY), x: event.clientX, y: event.clientY };
     gesture.timer = setTimeout(() => {
