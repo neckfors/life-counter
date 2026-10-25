@@ -17,6 +17,19 @@ function showUpdate(worker) {
   document.body.append(notice);
 }
 
+// The version the phone is running, from the service worker that serves the app. Null when there is
+// none (the Wi-Fi test address, or the very first visit before it has taken over).
+export function runningVersion() {
+  const worker = navigator.serviceWorker?.controller;
+  if (!worker) return Promise.resolve(null);
+  return new Promise(resolve => {
+    const channel = new MessageChannel();
+    channel.port1.onmessage = event => resolve(event.data);
+    worker.postMessage('version', [channel.port2]);
+    setTimeout(() => resolve(null), 2000);
+  });
+}
+
 export async function initUpdates() {
   // Service workers only run over https (and on localhost), not on the Wi-Fi test address.
   if (!('serviceWorker' in navigator)) return;

@@ -1260,6 +1260,12 @@ button {
   font-size: 20px;
 }
 
+.help-content .about-version {
+  margin-top: -8px;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
 .about-link {
   display: grid;
   place-items: center;

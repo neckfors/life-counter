@@ -1,6 +1,7 @@
 // The help screen: General, Settings and About tabs.
 
 import { el, button, openScreen } from './dom.js';
+import { runningVersion } from './update.js';
 
 // The PayPal.me link in About and the menu; it is left out while this is empty.
 export const PAYPAL_URL = 'https://paypal.me/neckfors';
@@ -89,8 +90,12 @@ function about() {
   content.append(
     el('img', 'about-icon'),
     el('h2', 'about-name', 'Neckfors Life Counter'),
+    el('p', 'about-version', ''),
     el('p', '', 'Thank you so much for using the app, I really appreciate it!'),
   );
+  runningVersion().then(version => {
+    if (version !== null) content.querySelector('.about-version').textContent = `Version ${version}`;
+  });
   content.querySelector('.about-icon').src = 'icons/icon-192.png';
   content.querySelector('.about-icon').alt = '';
   if (PAYPAL_URL) content.append(paypalLink());

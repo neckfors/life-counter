@@ -2,7 +2,7 @@
 // Bump VERSION whenever anything is published; that is how phones notice the update. Add new files
 // to FILES.
 
-const VERSION = 19;
+const VERSION = 20;
 const CACHE = `neckfors-life-counter-${VERSION}`;
 
 const FILES = [
@@ -49,6 +49,8 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('message', event => {
   if (event.data === 'update') self.skipWaiting();
+  // Help → About asks which version the phone is running.
+  if (event.data === 'version') event.ports[0]?.postMessage(VERSION);
 });
 
 self.addEventListener('fetch', event => {

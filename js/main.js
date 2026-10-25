@@ -16,7 +16,9 @@ document.addEventListener('contextmenu', event => event.preventDefault());
 
 // iPhones ignore user-scalable=no in the viewport tag, so a pinch or a quick double tap (easy to do
 // while tapping a life total) would zoom the page in. Block both; buttons and text fields keep
-// their normal taps.
+// their normal taps. The board only uses pointer events, so it can turn off the browser's own touch
+// handling (zoom included) altogether.
+document.getElementById('board').addEventListener('touchstart', event => event.preventDefault(), { passive: false });
 document.addEventListener('gesturestart', event => event.preventDefault());
 let lastTouchEnd = 0;
 document.addEventListener('touchend', event => {
