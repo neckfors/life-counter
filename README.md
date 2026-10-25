@@ -3,7 +3,7 @@
 A life counter for card games, for 1–6 players sitting around the table. The phone lies flat in
 the middle, and each player's area is turned to face them.
 
-**Open the app: https://rondoll.github.io/neckfors-life-counter/**
+**Open the app: https://neckfors.github.io/neckfors-life-counter/**
 
 It runs in the browser and can be installed on your phone like an app. Once installed, it works
 offline.
