@@ -93,7 +93,7 @@ export function openMenu() {
   );
   if (PAYPAL_URL) {
     const support = tile('support', 'Support the app', () => open(PAYPAL_URL, '_blank', 'noopener'));
-    support.classList.add('wide');
+    support.classList.add('wide', 'slim');
     tiles.push(support);
   }
   panel.append(...tiles);
