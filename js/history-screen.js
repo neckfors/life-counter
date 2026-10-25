@@ -55,7 +55,11 @@ export function openHistory() {
       tab.classList.toggle('selected', player === selected);
       tabs.append(tab);
     }
-    return [tabs, scoreSheet(selected)];
+    // The tabs, the player's name and the column headings stay at the top while the rows scroll.
+    const { top, sheet } = scoreSheet(selected);
+    const pinned = el('div', 'sheet-top');
+    pinned.append(tabs, ...top);
+    return [pinned, sheet];
   }
 
   render();
@@ -75,10 +79,13 @@ function scoreSheet(player) {
   const rows = history.simple.filter(entry => entry.player === player);
   const sheet = el('div', 'sheet');
   const names = [...new Set(rows.map(entry => entry.name))];
-  sheet.append(el('h2', 'sheet-title', (names.length ? names : [state.players[player].name]).join(' / ')));
+  const title = el('h2', 'sheet-title', (names.length ? names : [state.players[player].name]).join(' / '));
+
+  // The headings are a table of their own, with the same fixed columns as the rows below.
+  const header = el('table', 'sheet-columns');
+  header.append(row('sheet-header', 'Life', ...counterHeader(rows[0] ?? state.settings)));
 
   const table = el('table');
-  table.append(row('sheet-header', 'Life', ...counterHeader(rows[0] ?? state.settings)));
   rows.forEach((entry, i) => {
     const previous = rows[i - 1];
     if (previous && entry.name !== previous.name) {
@@ -97,7 +104,7 @@ function scoreSheet(player) {
   });
   sheet.append(table);
   if (!rows.length) sheet.append(el('p', 'empty', 'No changes yet.'));
-  return sheet;
+  return { top: [title, header], sheet };
 }
 
 function formatTime(time) {

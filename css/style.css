@@ -895,7 +895,21 @@ button {
   font-weight: 600;
 }
 
-.sheet-title {
+/* Pinned above the score sheet: the tabs, the player's name and the column headings. */
+.sheet-top {
+  position: sticky;
+  top: -8px;
+  z-index: 1;
+  margin: 0 -16px;
+  padding: 0 16px;
+  background: #121212;
+}
+
+.sheet-top .tabs {
+  position: static;
+}
+
+.screen-body .sheet-title {
   margin: 12px 0 8px;
   color: var(--text);
   font-size: 18px;
@@ -904,14 +918,16 @@ button {
   letter-spacing: 0;
 }
 
-.sheet table {
+.sheet table,
+.sheet-columns {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
   font-variant-numeric: tabular-nums;
 }
 
-.sheet td {
+.sheet td,
+.sheet-columns td {
   padding: 6px 4px;
   border-bottom: 1px solid #262626;
   font-size: 18px;
