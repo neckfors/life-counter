@@ -5,7 +5,7 @@ import { el, button, openOverlay } from './dom.js';
 import { reset } from './reset.js';
 import { rollForAll, rollOne } from './dice.js';
 import { pickStartingPlayer } from './first-player.js';
-import { openHelp } from './help.js';
+import { openHelp, PAYPAL_URL } from './help.js';
 import { openSettings } from './settings.js';
 import { openHistory } from './history-screen.js';
 import { openStyling } from './styling.js';
@@ -38,6 +38,7 @@ const ICONS = {
   styling: '<path d="M4 19l5-14 5 14M5.8 14h6.4"/><path d="M15.5 12.5a2.8 2.8 0 1 1 0 5.6 2.8 2.8 0 0 1 0-5.6zM18.3 12.5V19"/>',
   settings: gearPath(),
   help: '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .9-1 1.6v.4"/><circle cx="12" cy="17" r=".6"/>',
+  support: '<path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.3 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/>',
 };
 
 function icon(name) {
@@ -90,5 +91,10 @@ export function openMenu() {
     tile('settings', 'Settings', openSettings),
     tile('help', 'Help', openHelp),
   );
+  if (PAYPAL_URL) {
+    const support = tile('support', 'Support the app', () => open(PAYPAL_URL, '_blank', 'noopener'));
+    support.classList.add('wide');
+    tiles.push(support);
+  }
   panel.append(...tiles);
 }

@@ -2,7 +2,7 @@
 
 import { el, button, openScreen } from './dom.js';
 
-// The PayPal.me link in About and Settings; it is left out while this is empty.
+// The PayPal.me link in About and the menu; it is left out while this is empty.
 export const PAYPAL_URL = 'https://paypal.me/neckfors';
 const EMAIL = 'neckfors@gmail.com';
 
@@ -37,6 +37,7 @@ const TABS = {
       'History: a score sheet for each player, and Details with every change and its time. Quick changes within 3 seconds count as one.',
       'Styling: text size, typeface and colour for life, names and counters.',
       'Fullscreen: hides the browser and status bar. The installed app on Android always opens fullscreen, so it has no Fullscreen button.',
+      'Support the app: opens PayPal, if you would like to give a small donation.',
     ]],
     ['Saving and installing', [
       'Everything is saved automatically after every change.',
@@ -75,7 +76,7 @@ function topics(list) {
   return content;
 }
 
-export function paypalLink() {
+function paypalLink() {
   const paypal = el('a', 'button primary about-link', 'Support the app on PayPal');
   paypal.href = PAYPAL_URL;
   paypal.target = '_blank';
