@@ -382,9 +382,9 @@ button {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: repeat(5, 1fr) auto;
-  gap: 6px;
+  gap: 5px;
   width: min(86vw, 340px);
-  padding: 8px;
+  padding: 6px;
 }
 
 .menu-item {
@@ -392,14 +392,14 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 8px 4px;
+  gap: 3px;
+  padding: 6px 4px;
   border: 2px solid transparent;
-  border-radius: 12px;
+  border-radius: 10px;
   background: var(--panel-raised);
   font-size: 14px;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.15;
   text-align: center;
 }
 
@@ -415,7 +415,7 @@ button {
 .menu-item.slim {
   flex-direction: row;
   gap: 8px;
-  padding: 8px;
+  padding: 6px;
 }
 
 /* Fullscreen when switched on. */
@@ -429,8 +429,8 @@ button {
 
 .menu-icon {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   color: var(--text-dim);
 }
 
