@@ -182,11 +182,11 @@ button {
 /* Text sizes follow the space of each part of the player's box; every player's box is the same
    size (see .face), so the text is the same size for everyone. */
 .life .value {
-  font-size: calc(min(66cqh, 44cqw * var(--life-widen, 1)) * var(--life-scale, 1));
+  font-size: calc(min(66cqh, 44cqw * var(--life-widen, 1)) * var(--life-scale, 1) * var(--fit, 1));
 }
 
 .counter .value {
-  font-size: calc(min(95cqh, 17cqw * var(--counters-widen, 1)) * var(--counters-scale, 1));
+  font-size: calc(min(95cqh, 17cqw * var(--counters-widen, 1)) * var(--counters-scale, 1) * var(--fit, 1));
 }
 
 /* Trimmed to the top of the capitals; the padding and negative margin keep accents (Å, Ö) from being

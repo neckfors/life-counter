@@ -244,7 +244,28 @@ export function render() {
     area.counterTwo.element.hidden = !s.showCounterTwo;
     area.counters.hidden = bothHidden;
   }
+  fitNumbers();
 }
+
+// A number keeps its normal size unless it would run past its space (e.g. 100 life, or a large
+// Styling size); then only that number shrinks just enough to fit. It grows back when it fits again.
+const FIT_WIDTH = 0.92;       // Share of the space's width a number may use.
+
+function fitNumbers() {
+  const values = areas.flatMap(area => [area.life, area.counterOne, area.counterTwo]);
+  for (const { wrap } of values) wrap.style.removeProperty('--fit');
+  const fits = values.map(({ element, wrap }) => {
+    if (!element.clientWidth || !wrap.offsetWidth) return 1;
+    return Math.min(1, (element.clientWidth * FIT_WIDTH) / wrap.offsetWidth, element.clientHeight / wrap.offsetHeight);
+  });
+  values.forEach(({ wrap }, i) => {
+    if (fits[i] < 1) wrap.style.setProperty('--fit', fits[i]);
+  });
+}
+
+// The new size or typeface is applied by styling.js in the same event, so measure once it is done.
+events.addEventListener('styling', () => queueMicrotask(fitNumbers));
+document.fonts?.addEventListener('loadingdone', fitNumbers);
 
 // Every player's content (life, counters, name) sits in a box of the same size, centred in their
 // area, so all text is the same size for everyone. The box is the largest that fits in every area
@@ -255,6 +276,7 @@ function sizeBoxes() {
     rot % 180 ? [area.clientHeight, area.clientWidth] : [area.clientWidth, area.clientHeight]);
   board.style.setProperty('--face-w', `${Math.min(...views.map(([w]) => w))}px`);
   board.style.setProperty('--face-h', `${Math.min(...views.map(([, h]) => h))}px`);
+  fitNumbers();
 }
 
 new ResizeObserver(sizeBoxes).observe(board);
