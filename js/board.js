@@ -249,12 +249,25 @@ const SIZES = [
   ['--name-size', area => area.nameText],
 ];
 
+// Bigger areas keep a bigger life number, but toned down to this share of their own size (never
+// below the smallest life on the board).
+const BIGGER_LIFE = 0.9;
+
 function equalizeSizes() {
   for (const [name] of SIZES) board.style.removeProperty(name);
+  for (const area of areas) area.life.wrap.style.removeProperty('font-size');
   if (!areas.length) return;
   const smallest = SIZES.map(([, element]) =>
     Math.min(...areas.map(area => parseFloat(getComputedStyle(element(area)).fontSize))));
   SIZES.forEach(([name], i) => board.style.setProperty(name, `${smallest[i]}px`));
+
+  const lifeSizes = areas.map(area => parseFloat(getComputedStyle(area.life.wrap).fontSize));
+  const smallestLife = Math.min(...lifeSizes);
+  areas.forEach((area, i) => {
+    if (lifeSizes[i] > smallestLife) {
+      area.life.wrap.style.fontSize = `${Math.max(smallestLife, lifeSizes[i] * BIGGER_LIFE)}px`;
+    }
+  });
 }
 
 new ResizeObserver(() => equalizeSizes()).observe(board);
