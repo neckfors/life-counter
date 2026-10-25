@@ -1,4 +1,5 @@
-// The dialogs opened by holding a value or a name. Both are rotated to face the player.
+// The dialogs opened by holding a value or a name. The value dialog is rotated to face the player;
+// the name dialog is opened upright (see renamePlayer in board.js).
 
 import { state, toggleFavorite } from './state.js';
 import { el, button, openOverlay } from './dom.js';

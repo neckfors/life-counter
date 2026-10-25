@@ -76,12 +76,13 @@ async function editValue(player, field, rot) {
 
 // Choosing a name another player in the game has swaps the two players (name, life and counters),
 // e.g. when people sit in different seats than last game.
-async function renamePlayer(player, rot) {
+// The name dialog always opens upright, since the phone keyboard can only appear upright.
+async function renamePlayer(player) {
   const others = state.players
     .map((p, i) => ({ name: p.name, i }))
     .slice(0, state.settings.playerCount)
     .filter(({ i }) => i !== player);
-  const name = await openNameDialog({ current: state.players[player].name, rot, taken: others.map(o => o.name) });
+  const name = await openNameDialog({ current: state.players[player].name, rot: 0, taken: others.map(o => o.name) });
   if (name === null) return;
   const other = others.find(o => o.name === name);
   if (other) swapPlayers(player, other.i);
@@ -146,7 +147,7 @@ function addGestures(entry) {
 
   const hold = point => {
     const marks = landmarks(entry);
-    if (point.y >= marks.nameTop) renamePlayer(player, rot);
+    if (point.y >= marks.nameTop) renamePlayer(player);
     else if (point.y >= marks.countersTop) editValue(player, counterAt(point.x, marks.width), rot);
     else editValue(player, 'life', rot);
   };
