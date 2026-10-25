@@ -6,6 +6,7 @@ import {
 import { LAYOUTS, getLayout, buildTree } from './layouts.js';
 import { el, button, openScreen, openOverlay } from './dom.js';
 import { wakeLockSupported, vibrationSupported, fullscreenSupported, appIsFullscreen } from './device.js';
+import { PAYPAL_URL, paypalLink } from './help.js';
 
 export function openSettings() {
   const { body } = openScreen('Settings');
@@ -88,13 +89,17 @@ export function openSettings() {
       wakeLockSupported ? '' : 'Not available here. It works when the app is opened over https.'),
     row('Vibrate on tap', toggle('vibrate'), vibrationSupported ? 'Android only.' : 'Not available on this device.'),
   ));
+  const support = PAYPAL_URL && section('Support the app',
+    el('p', 'field-hint', 'The app is free. If you like it, a small donation is much appreciated!'),
+    paypalLink(),
+  );
   const reset = section('Reset',
     button('Reset everything', confirmResetEverything, 'button danger wide'),
     el('p', 'field-hint', 'Resets all settings, life, counters, player names, favourites, styling and history.'),
   );
 
   renderPlayers();
-  body.replaceChildren(game, counters, players, device, reset);
+  body.replaceChildren(...[game, counters, players, device, support, reset].filter(Boolean));
 }
 
 function section(title, ...content) {

@@ -2,8 +2,8 @@
 
 import { el, button, openScreen } from './dom.js';
 
-// The PayPal.me link in About; the line is left out while this is empty.
-const PAYPAL_URL = 'https://paypal.me/neckfors';
+// The PayPal.me link in About and Settings; it is left out while this is empty.
+export const PAYPAL_URL = 'https://paypal.me/neckfors';
 const EMAIL = 'neckfors@gmail.com';
 
 // Each topic: [heading, text]. Text may hold several paragraphs.
@@ -75,6 +75,14 @@ function topics(list) {
   return content;
 }
 
+export function paypalLink() {
+  const paypal = el('a', 'button primary about-link', 'Support the app on PayPal');
+  paypal.href = PAYPAL_URL;
+  paypal.target = '_blank';
+  paypal.rel = 'noopener';
+  return paypal;
+}
+
 function about() {
   const content = el('div', 'help-content about');
   content.append(
@@ -84,13 +92,7 @@ function about() {
   );
   content.querySelector('.about-icon').src = 'icons/icon-192.png';
   content.querySelector('.about-icon').alt = '';
-  if (PAYPAL_URL) {
-    const paypal = el('a', 'button primary about-link', 'Support the app on PayPal');
-    paypal.href = PAYPAL_URL;
-    paypal.target = '_blank';
-    paypal.rel = 'noopener';
-    content.append(paypal);
-  }
+  if (PAYPAL_URL) content.append(paypalLink());
   const email = el('a', 'about-email', EMAIL);
   email.href = `mailto:${EMAIL}`;
   content.append(
