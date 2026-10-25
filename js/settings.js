@@ -78,11 +78,10 @@ export function openSettings() {
       { info: true }),
     row('Starting value', stepper(`startCounter${key}`, { min: -999, max: 9999 })),
   )));
+  // The installed app always runs fullscreen, so it has no Fullscreen row.
   const device = section('Device', card(
-    row('Fullscreen', toggle('fullscreen', !fullscreenSupported),
-      appIsFullscreen ? 'The installed app always runs fullscreen.'
-        : fullscreenSupported ? 'The browser may still show the status bar at times.'
-        : 'Not available on this device.'),
+    ...(appIsFullscreen ? [] : [row('Fullscreen', toggle('fullscreen', !fullscreenSupported),
+      fullscreenSupported ? 'The browser may still show the status bar at times.' : 'Not available on this device.')]),
     row('Keep screen awake', toggle('keepAwake'),
       wakeLockSupported ? '' : 'Not available here. It works when the app is opened over https.'),
     row('Vibrate on tap', toggle('vibrate'), vibrationSupported ? 'Android only.' : 'Not available on this device.'),

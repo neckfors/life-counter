@@ -59,7 +59,7 @@ const TABS = {
       'Number of players (1–6), the layout (which way each player faces), and each player’s background colour. Changing the number of players keeps the values and names of the players already in the game.',
     ]],
     ['Device', [
-      'Fullscreen: hides the browser and status bar, until switched off. The installed app on Android always runs fullscreen. Not available on iPhone; install the app instead.',
+      'Fullscreen: hides the browser and status bar, until switched off. The installed app on Android always runs fullscreen, so it has no Fullscreen switch. Not available on iPhone; install the app instead.',
       'Keep screen awake: stops the screen from turning off during a game.',
       'Vibrate on tap: a short buzz when a value changes (Android only).',
     ]],
