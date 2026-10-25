@@ -176,11 +176,11 @@ button {
   text-box: trim-both cap alphabetic;
 }
 
-/* Each area works out a text size from its own space (below). board.js then sets --life-size,
-   --counters-size and --name-size to the smallest of these, so every player's text is the same
-   size even when the areas differ in shape. */
+/* Each area works out a text size from its own space (below). Life keeps its own size, so a
+   bigger area gets a bigger number. For counters and names, board.js sets --counters-size and
+   --name-size to the smallest of all areas, so that small text is the same for every player. */
 .life .value {
-  font-size: var(--life-size, calc(min(80cqh, 52cqw * var(--life-widen, 1)) * var(--life-scale, 1)));
+  font-size: calc(min(66cqh, 44cqw * var(--life-widen, 1)) * var(--life-scale, 1));
 }
 
 .counter .value {

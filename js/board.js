@@ -240,11 +240,11 @@ export function render() {
   equalizeSizes();
 }
 
-// Gives every area the same text sizes: the smallest that any area works out from its own space
-// (see the size rules in style.css). The sizes depend on each area's shape, so this runs again
-// whenever the layout, screen size, styling or counter visibility changes.
+// Gives every area the same counter and name sizes: the smallest that any area works out from its
+// own space (see the size rules in style.css). Life is left to each area, so bigger areas get
+// bigger numbers. The sizes depend on each area's shape, so this runs again whenever the layout,
+// screen size, styling or counter visibility changes.
 const SIZES = [
-  ['--life-size', area => area.life.wrap],
   ['--counters-size', area => area.counterOne.wrap],
   ['--name-size', area => area.nameText],
 ];
