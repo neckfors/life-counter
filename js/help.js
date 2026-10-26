@@ -18,6 +18,9 @@ const TABS = {
       'Swipe up on a counter for +1 and down for −1. You can start the swipe below the counter, on the name.',
       'A swipe up that reaches the middle of the life number changes life instead. A swipe down that starts on the life number changes life.',
     ]],
+    ['Edges of the screen', [
+      'Swipes and taps that start at the very top or bottom edge are ignored, so opening the phone’s status bar or navigation bar does not change anything.',
+    ]],
     ['Typing a value', [
       'Hold life or a counter for about a second. Type 14 to set the value, or +3 / −7 to change it.',
     ]],
@@ -36,7 +39,7 @@ const TABS = {
       'Roll one die: one die for everyone.',
       'Random starting player: picks who goes first.',
       'History: a score sheet for each player, and Details with every change and its time. Quick changes within 3 seconds count as one.',
-      'Styling: text size, typeface and colour for life, names and counters.',
+      'Styling: text size, typeface and colour for life, names and counters. A number that would not fit in its space (e.g. 100 life) is made smaller.',
       'Fullscreen: hides the browser and status bar. The installed app on Android always opens fullscreen, so it has no Fullscreen button.',
       'Support the app: opens PayPal, if you would like to give a small donation.',
     ]],

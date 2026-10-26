@@ -54,7 +54,8 @@ against two · 6 players, three against three, sideways.*
 
 The text size, typeface (Normal, Bold, Condensed or Serif) and colour can be changed for life,
 names and counters, and the board shows the change as you drag the slider. Each player picks
-their own background colour. Either counter can be hidden; life then gets the extra space.
+their own background colour. Either counter can be hidden; life then gets the extra space. A
+number that gets too long for its space, such as 100 life, shrinks just enough to fit.
 
 <p>
   <img src="docs/styling.png" alt="Condensed typeface, larger life, custom colours and one counter hidden" width="200">
@@ -68,8 +69,8 @@ counter hidden.*
 - **Android (Chrome):** open the app, then menu ⋮ → **Install app** (or **Add to Home screen**).
 - **iPhone (Safari):** open the app, then **Share** → **Add to Home Screen**.
 
-On iPhone, fullscreen and vibration are not available to web apps. The installed app still hides
-the browser bar.
+On Android, the installed app always opens fullscreen. On iPhone, fullscreen and vibration are not
+available to web apps; the installed app still hides the browser bar.
 
 ## How to use it
 
@@ -82,6 +83,9 @@ the browser bar.
 | Rename a player | Hold the name for about a second |
 | Everything else | Tap the round button in the middle of the screen |
 
+Swipes and taps that start at the very top or bottom edge of the screen are ignored, so opening
+the phone's status bar or navigation bar never changes a value.
+
 The **Help** screen in the app explains everything in more detail.
 
 ## Development
@@ -92,8 +96,10 @@ Plain HTML, CSS and JavaScript (ES modules), with no build step and no dependenc
   open http://localhost:8000.
 - **Offline support:** `sw.js` is a service worker that keeps the app's files on the device. When
   publishing a change, increase `VERSION` in `sw.js`, which is how installed apps notice the
-  update and show *"Update available — tap to reload"*. New files must also be added to its
-  `FILES` list.
+  update and show *"Update available — tap to reload"*. Help → About shows the version a phone is
+  running. New files must also be added to its `FILES` list.
+- **Icons:** drawn in `icons/icon.svg` and `icons/maskable.svg` (the Android home-screen version);
+  the PNGs are rendered from them.
 - **Hosting:** GitHub Pages, served from the root of the `main` branch.
 
 This is a rebuild of the author's Android app from 2018, as a Progressive Web App.
