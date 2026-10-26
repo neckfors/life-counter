@@ -41,7 +41,7 @@ const TABS = {
       'History: a score sheet for each player, and Details with every change and its time. Quick changes within 3 seconds count as one.',
       'Styling: text size, typeface and colour for life, names and counters. A number that would not fit in its space (e.g. 100 life) is made smaller.',
       'Fullscreen: hides the browser and status bar. The installed app on Android always opens fullscreen, so it has no Fullscreen button.',
-      'Support the app: opens PayPal, if you would like to give a small donation.',
+      'Support the author: opens PayPal, if you would like to give a small donation.',
     ]],
     ['Saving and installing', [
       'Everything is saved automatically after every change.',
@@ -81,7 +81,7 @@ function topics(list) {
 }
 
 function paypalLink() {
-  const paypal = el('a', 'button primary about-link', 'Support the app on PayPal');
+  const paypal = el('a', 'button primary about-link', 'Support the author on PayPal');
   paypal.href = PAYPAL_URL;
   paypal.target = '_blank';
   paypal.rel = 'noopener';

@@ -111,4 +111,4 @@ This is a rebuild of the author's Android app from 2018, as a Progressive Web Ap
 
 ## Support
 
-If you like the app, you can support it on [PayPal](https://paypal.me/neckfors). Thank you!
+If you like the app, you can support the author on [PayPal](https://paypal.me/neckfors). Thank you!
