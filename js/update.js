@@ -1,20 +1,23 @@
-// Registers the service worker (offline use) and shows "Update available — tap to reload" when a new
-// version has been downloaded. The update is only applied when tapped, so a game is never reloaded
-// without asking.
+// Registers the service worker (offline use) and shows "New version available" with an Update
+// button when a new version has been downloaded. The update is only applied when tapped, so a game
+// is never reloaded without asking.
 
-import { button } from './dom.js';
+import { el, button } from './dom.js';
 
 const CHECK_INTERVAL = 30 * 60 * 1000;
 
 let updating = false;
 
 function showUpdate(worker) {
-  if (document.querySelector('.update-notice')) return;
-  const notice = button('Update available — tap to reload', () => {
+  if (document.querySelector('.update-bar')) return;
+  const bar = el('div', 'update-bar');
+  bar.setAttribute('role', 'status');
+  const update = button('Update', () => {
     updating = true;
     worker.postMessage('update');
-  }, 'update-notice');
-  document.body.append(notice);
+  }, 'update-button');
+  bar.append(el('span', '', 'New version available'), update);
+  document.body.append(bar);
 }
 
 // The version the phone is running, from the service worker that serves the app. Null when there is
@@ -50,7 +53,7 @@ export async function initUpdates() {
     });
   });
 
-  // Reload once the new version has taken over, but only after "Update available" was tapped (the
+  // Reload once the new version has taken over, but only after Update was tapped (the
   // very first install also takes over the page, and that must not reload it).
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (!updating) return;

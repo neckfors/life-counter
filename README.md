@@ -96,8 +96,8 @@ Plain HTML, CSS and JavaScript (ES modules), with no build step and no dependenc
   open http://localhost:8000.
 - **Offline support:** `sw.js` is a service worker that keeps the app's files on the device. When
   publishing a change, increase `VERSION` in `sw.js`, which is how installed apps notice the
-  update and show *"Update available — tap to reload"*. Help → About shows the version a phone is
-  running. New files must also be added to its `FILES` list.
+  update and show *"New version available"* with an **Update** button. Help → About shows the
+  version a phone is running. New files must also be added to its `FILES` list.
 - **Icons:** drawn in `icons/icon.svg` and `icons/maskable.svg` (the Android home-screen version);
   the PNGs are rendered from them.
 - **Hosting:** GitHub Pages, served from the root of the `main` branch.
